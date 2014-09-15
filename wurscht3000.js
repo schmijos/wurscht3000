@@ -71,134 +71,43 @@ function convertManyToHam(sourceColors, basePalette) {
     return result;
 }
 
-// Add a coloured div to the view
-function addQuad(rgb, to) {
-    document.getElementById(to).innerHTML += 
-        '<div class="quad" style="background-color: '
-        +'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+');"/>';
-}
-
-
 // DOM READY - GUI Tests:
 (function(){
-var tId = setInterval(function(){if(document.readyState == "complete") onComplete()},11);
-function onComplete(){ clearInterval(tId);
 
-var black = [0,   0,   0  ];
-var white = [255, 255, 255];
+    var black = [0,   0,   0  ];
+    var white = [255, 255, 255];
+    var basePalette = generateBasePalette();
 
-var basePalette = generateBasePalette();
-basePalette.forEach(function(el) {
-         addQuad(el, "palette");
-});
+    function renderFrame(ctx, diff, width, height) {
+        imageData = ctx.getImageData(0, 0, width, height);
+        for (i = 0; i < imageData.data.length;) {
+            imageData.data[i] = (imageData.data[i] + diff[i++]) % 256; // Red
+            imageData.data[i] = (imageData.data[i] + diff[i++]) % 256; // Green
+            imageData.data[i] = (imageData.data[i] + diff[i++]) % 256; // Blue
+            imageData.data[i] = imageData.data[i++]; // Alpha
+        }
+        ctx.putImageData(imageData, 0, 0);
+    }
 
-// get nearest
-var c1 = [150,120,40];
-addQuad(c1, "tries");
-var n1 = findNearestColor(c1, basePalette);
-addQuad(n1, "tries");
-addQuad(white, "tries");
+    // Image sample
+    function imageLoaded(ev) {
+        var el = document.getElementById("cancan");
+        var ctx = el.getContext("2d");
+        ctx.drawImage(ev.target, 0, 0);
 
-// get nearest
-var c2 = [10,45,130];
-addQuad(c2, "tries");
-var n2 = findNearestColor(c2, basePalette);
-addQuad(n2, "tries");
-addQuad(white, "tries");
+        var diff = new Array(4 * el.width * el.height);
+        for(var i=0; i < diff.length; i++) {
+            diff[i] = 1;
+        }
 
-// get nearest
-var c3 = [10,225,13];
-addQuad(c3, "tries");
-var n3 = findNearestColor(c3, basePalette);
-addQuad(n3, "tries");
-addQuad(white, "tries");
+        setInterval(function() {
+            renderFrame(ctx, diff, el.width, el.height);
+        }, 100);
+    }
 
-// HAM7 Simulation Red
-var sourceRed = [], sourceGreen = [], sourceBlue = [];
-for (var i=0; i<32; i++) {
-     var v = i*8;
-     sourceRed[v] = [
-         Math.floor(Math.random()*256),
-         Math.floor(Math.random()*256),
-         Math.floor(Math.random()*256)
-     ]   // random colors
-     sourceGreen[v] = [ 50,  v,128]; // some shades
-     sourceBlue[v]  = [128, 85,  v];  // some shades
-}
+    im = new Image();
+    im.onload = imageLoaded;
+    im.src = "coredump.png"; 
 
-sourceRed.forEach(function(c){
-         addQuad(c, "fluid-test-source");
-});
-sourceGreen.forEach(function(c){
-        addQuad(c, "fluid-test-source");
-});
- sourceBlue.forEach(function(c){
-         addQuad(c, "fluid-test-source");
-         });
-
- // try to show each source color adequately
- convertManyToHam(sourceRed, basePalette).forEach(function(c){
-         addQuad(c, "fluid-test-result");
-         });
- convertManyToHam(sourceGreen, basePalette).forEach(function(c){
-         addQuad(c, "fluid-test-result");
-         });
- convertManyToHam(sourceBlue, basePalette).forEach(function(c){
-         addQuad(c, "fluid-test-result");
-         });
-
- // Image sample
- function imageLoaded(ev) {
-     element = document.getElementById("cancan");
-     c = element.getContext("2d");
-
-     im = ev.target; // the image, assumed to be 200x200
-
-     // read the width and height of the canvas
-     width = element.width;
-     height = element.height;
-
-     // stamp the image on the left of the canvas:
-     c.drawImage(im, 0, 0);
-
-     // get all canvas pixel data
-     imageData = c.getImageData(0, 0, width, height);
-
-     w2 = width / 2;
-
-     // run through the image, increasing blue, but filtering
-     // down red and green:
-
-     for (y = 0; y < height; y++) {
-         inpos = y * width * 4; // *4 for 4 ints per pixel
-         outpos = inpos + w2 * 4
-
-             var previousHamColor = [128, 128, 128]; // init with cube center
-         var hamColor = [0,0,0], sourceColor = [0,0,0];
-         for (x = 0; x < w2; x++) {
-             sourceColor[0] = imageData.data[inpos++]; // R
-             sourceColor[1] = imageData.data[inpos++]; // G
-             sourceColor[2] = imageData.data[inpos++]; // B
-             a = imageData.data[inpos++]; // Preserver alpha channel
-
-             hamColor = convertToHam(sourceColor, previousHamColor, basePalette)
-                 previousHamColor = hamColor;
-
-             imageData.data[outpos++] = hamColor[0];
-             imageData.data[outpos++] = hamColor[1];
-             imageData.data[outpos++] = hamColor[2];
-             imageData.data[outpos++] = a;
-         }
-     }
-
-     // put pixel data on canvas
-     c.putImageData(imageData, 0, 0);
- }
-
- im = new Image();
- im.onload = imageLoaded;
- im.src = "http://3.bp.blogspot.com/_GaHhpQPELjg/TU5fUPkNmSI/AAAAAAAAAJE/HZARmDE0oPs/s1600/A_grass_landscape_by_sjoerdkoala.jpg";    
-
- };
 })()
 
