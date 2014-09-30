@@ -1,14 +1,14 @@
 // Generates a base palette for cyclic additive HAM7
 function generateBasePalette() {
-/*    
+    
     return [
         [ 31, 17, 13],
         [ 13, 31, 17],
         [ 17, 13, 31],
         [240,240,240],
     ];
-*/
 
+/*
     return [
         [ 1, 0, 0],
         [ 0, 1, 0],
@@ -17,6 +17,7 @@ function generateBasePalette() {
         [0,250,0],
         [0,0,250]
     ];
+*/
 }
 
 // Calculate the nearest distance from the previously shown pixel to the next one
@@ -37,9 +38,9 @@ function calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, pixelOffset, baseP
     for (var i = 0; i < basePalette.length; i++) {
         // calculate distance between diff and base palette
         var dist = Math.pow(
-            Math.pow( (basePalette[i][0]+prevR)%256 - nextR, 2) + 
-            Math.pow( (basePalette[i][1]+prevG)%256 - nextG, 2) +
-            Math.pow( (basePalette[i][2]+prevB)%256 - nextB, 2)
+            Math.pow( (prevR + basePalette[i][0]) % 256 - nextR, 2) + 
+            Math.pow( (prevG + basePalette[i][1]) % 256 - nextG, 2) +
+            Math.pow( (prevB + basePalette[i][2]) % 256 - nextB, 2)
         , 0.5); // Euclidian Distance       
 
         dist = dist % 256;
@@ -56,19 +57,19 @@ function calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, pixelOffset, baseP
 // Calculate the jump diff to reach the next frame
 function calcNewDiffFrame(resDiffFrame, prevEncodedFrame, nextSourceFrame, basePalette) {
     for (var i = 0; i < resDiffFrame.length; i++) {
-        resDiffFrame[i] = calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, i, basePalette);
+        resDiffFrame[i] = calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, 4*i, basePalette);
     }
 }
 
 // Render pixel by pixel on a canvas context
 function renderFrame(ctx, diff, width, height, basePalette) {
     imageData = ctx.getImageData(0, 0, width, height);
-    diffPos = 0;
+    var diffPos = 0;
     for (var i = 0; i < imageData.data.length; diffPos++) {
-        console.log(basePalette[diff[diffPos]]);
-        imageData.data[i] = (imageData.data[i++] + basePalette[diff[diffPos]][0]) % 256; // Red
-        imageData.data[i] = (imageData.data[i++] + basePalette[diff[diffPos]][1]) % 256; // Green
-        imageData.data[i] = (imageData.data[i++] + basePalette[diff[diffPos]][2]) % 256; // Blue
+        var diffColor = basePalette[diff[diffPos]];
+        imageData.data[i] = (imageData.data[i++] + diffColor[0]) % 256; // Red
+        imageData.data[i] = (imageData.data[i++] + diffColor[1]) % 256; // Green
+        imageData.data[i] = (imageData.data[i++] + diffColor[2]) % 256; // Blue
         imageData.data[i] = imageData.data[i++]; // Alpha
     }
     ctx.putImageData(imageData, 0, 0);
@@ -96,38 +97,52 @@ function renderFrame(ctx, diff, width, height, basePalette) {
 
 // DOM READY - Encode and Decode Test Still Frame:
 (function(){
-
-    var black = [0,   0,   0  ];
-    var white = [255, 255, 255];
     var basePalette = generateBasePalette();
 
     // Image sample
-    function imageLoaded(ev) {
-        var el = document.getElementById("cancan");
-        var ctx = el.getContext("2d");
-        ctx.drawImage(ev.target, 0, 0);
+    function sourceImageLoaded(ev) {
+        var imgWidth = ev.target.width;
+        var imgHeight = ev.target.height;
 
-        // render a still frame 
-        var currentDiffFrame = new Array(el.width * el.height);
+        // init source
+        var sourceCanvas = document.getElementById("sourceImageContainer");
+        sourceCanvas.width = imgWidth;
+        sourceCanvas.height = imgHeight;
+        var sourceCtx = sourceCanvas.getContext("2d");
+        sourceCtx.drawImage(ev.target, 0, 0);
+        
+        // init target
+        var targetCanvas = document.getElementById("targetImageContainer");
+        targetCanvas.width = imgWidth;
+        targetCanvas.height = imgHeight;
+        var targetCtx = targetCanvas.getContext("2d");
+        targetCtx.drawImage(ev.target, 0, 0);
+        //targetCtx.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height)
+
+        // init a still frame setup
+        var currentDiffFrame = new Array(imgWidth * imgHeight);
         for(var i = 0; i < currentDiffFrame.length; i++) {
             currentDiffFrame[i] = 0;
         }
-        var currentRenderFrame = new Array(4 * el.width * el.height);
+
+        var currentRenderFrame = new Array(4 * imgWidth * imgHeight);
         for(var i = 0; i < currentRenderFrame.length; i++) {
-            currentRenderFrame[i] = 0;
+            currentRenderFrame[i] = 255; // begin with white
         }
-        var stillSourceFrame = ctx.getImageData(0, 0, el.width, el.height).data;
+
+        var sourceFrame = sourceCtx.getImageData(0, 0, imgWidth, imgHeight).data;
         var frame = 0;
- //       setInterval(function() {
-            calcNewDiffFrame(currentDiffFrame, currentRenderFrame, stillSourceFrame, basePalette);
-            renderFrame(ctx, currentDiffFrame, el.width, el.height, basePalette);
-            currentRenderFrame = ctx.getImageData(0, 0, el.width, el.height).data;
-            console.log("frame: "+ ++frame);
-   //     }, 1000);
+
+        setInterval(function() {
+            document.getElementById("frameCounter").innerHTML = ++frame;
+
+            calcNewDiffFrame(currentDiffFrame, currentRenderFrame, sourceFrame, basePalette);
+            renderFrame(targetCtx, currentDiffFrame, imgWidth, imgHeight, basePalette);
+            currentRenderFrame = targetCtx.getImageData(0, 0, imgWidth, imgHeight).data;
+        }, 40);
     }
 
-    im = new Image();
-    im.onload = imageLoaded;
-    im.src = "sample.png"; 
-
+    sourceImg = new Image();
+    sourceImg.onload = sourceImageLoaded;
+    sourceImg.src = "coredump.png"; 
 })()
