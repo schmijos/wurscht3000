@@ -3,29 +3,45 @@
 <head>
   <title></title>
   <style>
-    div.quad {
-        width: 10px;
-        height: 10px;
+    canvas {
+        border: 1px solid black;
     }
-
-    .containerSingle {
-        margin: 2px;
+    .row {
+        clear: both;
+    }
+    .col {
         float: left;
+        margin: 3px;
     }
-
-    .container {
+    .col p {
         margin: 0;
-        margin-top: 2px;
-        float: left;
     }
   </style>
   <script src="wurscht3000.js"></script>
 </head>
 <body>
 
+<h1>wurscht3000 encoding/decoding sample</h1>
 
-<canvas id="cancan">Canvas Blue Goat</canvas>
+<div class="row">
+    <div class="col">
+        <canvas id="sourceImageContainer">Source Image</canvas>
+        <p>Source</p>
+    </div>
 
+    <div class="col">
+        <canvas id="targetImageContainer">Target Image</canvas>
+        <p>Target/Enc</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <p>
+            Frame: <span id="frameCounter"></span>
+        </p>
+    </div>
+</div>
 
 </body>
 </html>
