@@ -11,3 +11,5 @@ The decoding is simply adding all diff colors in modulo 256.
 ## Example
 See the encoding of a still frame here: http://schmijos.github.io/
 The codec isn't very good for stills yet.
+
+Coming soon: a video of u-d-p eating meat paste!
