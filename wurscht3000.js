@@ -1,23 +1,25 @@
 // Generates a base palette for cyclic additive HAM7
 function generateBasePalette() {
-    
+   /* 
     return [
         [ 31, 17, 13],
         [ 13, 31, 17],
         [ 17, 13, 31],
         [240,240,240],
     ];
-
-/*
-    return [
-        [ 1, 0, 0],
-        [ 0, 1, 0],
-        [ 0, 0, 1],
-        [250,0,0],
-        [0,250,0],
-        [0,0,250]
-    ];
 */
+
+    return [
+        [ 10, 0, 0],
+        [ 0, 10, 0],
+        [ 0, 0, 10],
+        [245,0,0],
+        [0,245,0],
+        [0,0,245],
+        [30,30,30],
+        [225,225,225]
+    ];
+
 }
 
 // Calculate the nearest distance from the previously shown pixel to the next one
@@ -100,9 +102,11 @@ function renderFrame(ctx, diff, width, height, basePalette) {
     var basePalette = generateBasePalette();
 
     // Image sample
-    function sourceImageLoaded(ev) {
-        var imgWidth = ev.target.width;
-        var imgHeight = ev.target.height;
+    function onVideoPlay(ev) {
+        var $this = this;
+        
+        var imgWidth = ev.target.videoWidth;
+        var imgHeight = ev.target.videoHeight;
 
         // init source
         var sourceCanvas = document.getElementById("sourceImageContainer");
@@ -111,13 +115,14 @@ function renderFrame(ctx, diff, width, height, basePalette) {
         var sourceCtx = sourceCanvas.getContext("2d");
         sourceCtx.drawImage(ev.target, 0, 0);
         
+
         // init target
         var targetCanvas = document.getElementById("targetImageContainer");
         targetCanvas.width = imgWidth;
         targetCanvas.height = imgHeight;
         var targetCtx = targetCanvas.getContext("2d");
         targetCtx.drawImage(ev.target, 0, 0);
-        //targetCtx.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height)
+        targetCtx.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height)
 
         // init a still frame setup
         var currentDiffFrame = new Array(imgWidth * imgHeight);
@@ -134,15 +139,21 @@ function renderFrame(ctx, diff, width, height, basePalette) {
         var frame = 0;
 
         setInterval(function() {
-            document.getElementById("frameCounter").innerHTML = ++frame;
+            if (!$this.paused && !$this.ended) {
+                sourceCtx.drawImage(ev.target, 0, 0);
+                sourceFrame = sourceCtx.getImageData(0, 0, imgWidth, imgHeight).data;
 
-            calcNewDiffFrame(currentDiffFrame, currentRenderFrame, sourceFrame, basePalette);
-            renderFrame(targetCtx, currentDiffFrame, imgWidth, imgHeight, basePalette);
-            currentRenderFrame = targetCtx.getImageData(0, 0, imgWidth, imgHeight).data;
+                document.getElementById("frameCounter").innerHTML = ++frame;
+
+                calcNewDiffFrame(currentDiffFrame, currentRenderFrame, sourceFrame, basePalette);
+                renderFrame(targetCtx, currentDiffFrame, imgWidth, imgHeight, basePalette);
+                currentRenderFrame = targetCtx.getImageData(0, 0, imgWidth, imgHeight).data;
+            }
         }, 40);
     }
 
-    sourceImg = new Image();
-    sourceImg.onload = sourceImageLoaded;
-    sourceImg.src = "coredump.png"; 
+
+    var video = document.getElementById('sourceVideo');
+    video.addEventListener('play', onVideoPlay, false);
+
 })()

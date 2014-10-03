@@ -17,13 +17,19 @@
         margin: 0;
     }
   </style>
-  <script src="wurscht3000.js"></script>
 </head>
 <body>
 
 <h1>wurscht3000 encoding/decoding sample</h1>
 
 <div class="row">
+    <div class="col">
+        <video id="sourceVideo" controls="controls">
+            <source src="video.ogv" type="video/ogg">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
     <div class="col">
         <canvas id="sourceImageContainer">Source Image</canvas>
         <p>Source</p>
@@ -42,6 +48,8 @@
         </p>
     </div>
 </div>
+
+<script src="wurscht3000.js"></script>
 
 </body>
 </html>
