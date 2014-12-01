@@ -1,25 +1,25 @@
 // Generates a base palette for cyclic additive HAM7
 function generateBasePalette() {
-   /* 
+    /* // empirical best for 2bits per pixel
     return [
         [ 31, 17, 13],
         [ 13, 31, 17],
         [ 17, 13, 31],
         [240,240,240],
     ];
-*/
+    */
 
+    // one for 3bits per pixel
     return [
-        [ 10, 0, 0],
-        [ 0, 10, 0],
-        [ 0, 0, 10],
-        [245,0,0],
-        [0,245,0],
-        [0,0,245],
-        [30,30,30],
-        [225,225,225]
+        [  8,  0,  0],
+        [  0,  8,  0],
+        [  0,  0,  8],
+        [  0,  0,239],
+        [  0,239,  0],
+        [239,  0,  0],
+        [127,127,127],
+        [200,200,200]
     ];
-
 }
 
 // Calculate the nearest distance from the previously shown pixel to the next one
@@ -45,7 +45,6 @@ function calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, pixelOffset, baseP
             Math.pow( (prevB + basePalette[i][2]) % 256 - nextB, 2)
         , 0.5); // Euclidian Distance       
 
-        dist = dist % 256;
         // keep the smallest distance
         if (dist < minDistance) {
             minDistance = dist;
@@ -72,30 +71,10 @@ function renderFrame(ctx, diff, width, height, basePalette) {
         imageData.data[i] = (imageData.data[i++] + diffColor[0]) % 256; // Red
         imageData.data[i] = (imageData.data[i++] + diffColor[1]) % 256; // Green
         imageData.data[i] = (imageData.data[i++] + diffColor[2]) % 256; // Blue
-        imageData.data[i] = imageData.data[i++]; // Alpha
+        imageData.data[i++] = 255; // Alpha
     }
     ctx.putImageData(imageData, 0, 0);
 }
-
-/*
-// One Pixel Still Frame Test
-(function(){
-    var basePalette = generateBasePalette();
-    var currentDiffFrame = [ 0 ];
-    var currentRenderFrame = [ 0,0,0,0 ];
-    var stillSourceFrame = [ 0,10,10,0 ] 
-    for(var i = 0; i < 1000; i++) {
-        console.log("frame: "+i);
-        calcNewDiffFrame(currentDiffFrame, currentRenderFrame, stillSourceFrame, basePalette)
-        currentRenderFrame[0] = (currentRenderFrame[0] + basePalette[currentDiffFrame[0]][0]) % 256
-        currentRenderFrame[1] = (currentRenderFrame[1] + basePalette[currentDiffFrame[0]][1]) % 256
-        currentRenderFrame[2] = (currentRenderFrame[2] + basePalette[currentDiffFrame[0]][2]) % 256
-        console.log(currentDiffFrame)
-        console.log(currentRenderFrame)
-               
-    }
-})()
-*/
 
 // DOM READY - Encode and Decode Test Still Frame:
 (function(){
@@ -114,15 +93,12 @@ function renderFrame(ctx, diff, width, height, basePalette) {
         sourceCanvas.height = imgHeight;
         var sourceCtx = sourceCanvas.getContext("2d");
         sourceCtx.drawImage(ev.target, 0, 0);
-        
 
         // init target
         var targetCanvas = document.getElementById("targetImageContainer");
         targetCanvas.width = imgWidth;
         targetCanvas.height = imgHeight;
         var targetCtx = targetCanvas.getContext("2d");
-        targetCtx.drawImage(ev.target, 0, 0);
-        targetCtx.clearRect(0, 0, sourceCanvas.width, sourceCanvas.height)
 
         // init a still frame setup
         var currentDiffFrame = new Array(imgWidth * imgHeight);
@@ -132,27 +108,26 @@ function renderFrame(ctx, diff, width, height, basePalette) {
 
         var currentRenderFrame = new Array(4 * imgWidth * imgHeight);
         for(var i = 0; i < currentRenderFrame.length; i++) {
-            currentRenderFrame[i] = 255; // begin with white
+            currentRenderFrame[i] = 255; // begin with all white
         }
 
         var sourceFrame = sourceCtx.getImageData(0, 0, imgWidth, imgHeight).data;
         var frame = 0;
 
+        // main loop: rendering a encoding and decoding a source frame
         setInterval(function() {
-            if (!$this.paused && !$this.ended) {
-                sourceCtx.drawImage(ev.target, 0, 0);
-                sourceFrame = sourceCtx.getImageData(0, 0, imgWidth, imgHeight).data;
+            sourceCtx.drawImage(ev.target, 0, 0);
+            sourceFrame = sourceCtx.getImageData(0, 0, imgWidth, imgHeight).data;
 
-                document.getElementById("frameCounter").innerHTML = ++frame;
+            document.getElementById("frameCounter").innerHTML = ++frame;
 
-                calcNewDiffFrame(currentDiffFrame, currentRenderFrame, sourceFrame, basePalette);
-                renderFrame(targetCtx, currentDiffFrame, imgWidth, imgHeight, basePalette);
-                currentRenderFrame = targetCtx.getImageData(0, 0, imgWidth, imgHeight).data;
-            }
+            calcNewDiffFrame(currentDiffFrame, currentRenderFrame, sourceFrame, basePalette);
+            renderFrame(targetCtx, currentDiffFrame, imgWidth, imgHeight, basePalette);
+            currentRenderFrame = targetCtx.getImageData(0, 0, imgWidth, imgHeight).data;
         }, 40);
     }
 
-
+    // init 
     var video = document.getElementById('sourceVideo');
     video.addEventListener('play', onVideoPlay, false);
 
