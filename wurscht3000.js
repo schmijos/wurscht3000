@@ -1,16 +1,30 @@
 // Generates a base palette for cyclic additive HAM7
 function generateBasePalette() {
-    /* // empirical best for 2bits per pixel
+    /*// empirical best for 2bits per pixel
     return [
         [ 31, 17, 13],
         [ 13, 31, 17],
         [ 17, 13, 31],
         [240,240,240],
-    ];
-    */
+    ];*/
+    
+    /*return [
+        [  8,250,  8],
+        [250,  8,250],
+    ];*/
 
-    // one for 3bits per pixel
     return [
+        [ 31, 17, 13],
+        [ 13, 31, 17],
+        [ 17, 13, 31],
+        [240,240,240],
+        [ 59, 37, 23],
+        [ 23, 59, 37],
+        [ 37, 23, 59],
+        [225,225,225]
+    ];
+    // one for 3bits per pixel
+    /*return [
         [  8,  0,  0],
         [  0,  8,  0],
         [  0,  0,  8],
@@ -19,7 +33,8 @@ function generateBasePalette() {
         [239,  0,  0],
         [127,127,127],
         [200,200,200]
-    ];
+    ];*/
+
 }
 
 // Calculate the nearest distance from the previously shown pixel to the next one
@@ -82,6 +97,8 @@ function renderFrame(ctx, diff, width, height, basePalette) {
 
     // Image sample
     function onVideoPlay(ev) {
+        alert("Begin dec/enc now.");
+        
         var $this = this;
         
         var imgWidth = ev.target.videoWidth;
@@ -132,3 +149,32 @@ function renderFrame(ctx, diff, width, height, basePalette) {
     video.addEventListener('play', onVideoPlay, false);
 
 })()
+
+// Put event listeners into place
+window.addEventListener("DOMContentLoaded", function() {
+    // Grab elements, create settings, etc.
+    var video = document.getElementById("sourceVideo"),
+        videoObj = { "video": true },
+        errBack = function(error) {
+            console.log("Video capture error: ", error.code); 
+        };
+
+    // Put video listeners into place
+    if(navigator.getUserMedia) { // Standard
+        navigator.getUserMedia(videoObj, function(stream) {
+            video.src = stream;
+            video.play();
+        }, errBack);
+    } else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
+        navigator.webkitGetUserMedia(videoObj, function(stream){
+            video.src = window.webkitURL.createObjectURL(stream);
+            video.play();
+        }, errBack);
+    }
+    else if(navigator.mozGetUserMedia) { // Firefox-prefixed
+        navigator.mozGetUserMedia(videoObj, function(stream){
+            video.src = window.URL.createObjectURL(stream);
+            video.play();
+        }, errBack);
+    }
+}, false);
