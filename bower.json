@@ -1,0 +1,23 @@
+{
+  "name": "wurscht3000",
+  "main": "wurscht3000.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/schmijos/wurscht3000",
+  "authors": [
+    "schmijos <jschmid@fastmail.net>"
+  ],
+  "description": "This is a very basic video-codec based on cubic distance calculations in the rgb color space.",
+  "keywords": [
+    "video",
+    "codec",
+    "sausage"
+  ],
+  "license": "AGPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
