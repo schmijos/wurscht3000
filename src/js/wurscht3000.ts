@@ -79,7 +79,7 @@ function calcNewDiffFrame(resDiffFrame, prevEncodedFrame, nextSourceFrame, baseP
 
 // Render pixel by pixel on a canvas context
 function renderFrame(ctx, diff, width, height, basePalette) {
-    imageData = ctx.getImageData(0, 0, width, height);
+    var imageData: any = ctx.getImageData(0, 0, width, height);
     var diffPos = 0;
     for (var i = 0; i < imageData.data.length; diffPos++) {
         var diffColor = basePalette[diff[diffPos]];
@@ -90,6 +90,8 @@ function renderFrame(ctx, diff, width, height, basePalette) {
     }
     ctx.putImageData(imageData, 0, 0);
 }
+
+/*
 
 // DOM READY - Encode and Decode Test Still Frame:
 (function(){
@@ -105,14 +107,14 @@ function renderFrame(ctx, diff, width, height, basePalette) {
         var imgHeight = ev.target.videoHeight;
 
         // init source
-        var sourceCanvas = document.getElementById("sourceImageContainer");
+        var sourceCanvas: any = document.getElementById("sourceImageContainer");
         sourceCanvas.width = imgWidth;
         sourceCanvas.height = imgHeight;
         var sourceCtx = sourceCanvas.getContext("2d");
         sourceCtx.drawImage(ev.target, 0, 0);
 
         // init target
-        var targetCanvas = document.getElementById("targetImageContainer");
+        var targetCanvas: any = document.getElementById("targetImageContainer");
         targetCanvas.width = imgWidth;
         targetCanvas.height = imgHeight;
         var targetCtx = targetCanvas.getContext("2d");
@@ -149,8 +151,6 @@ function renderFrame(ctx, diff, width, height, basePalette) {
     video.addEventListener('play', onVideoPlay, false);
 
 })()
-
-/*
 
 // Put event listeners into place
 window.addEventListener("DOMContentLoaded", function() {

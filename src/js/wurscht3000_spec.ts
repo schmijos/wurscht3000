@@ -1,4 +1,4 @@
-"use strict";
+/// <reference path="../../typings/tsd.d.ts"/>
 
 //var square_lib = require('./wurscht3000.js');
 
