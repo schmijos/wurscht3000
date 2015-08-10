@@ -1,6 +1,6 @@
 {
   "name": "wurscht3000",
-  "main": "wurscht3000.js",
+  "main": "dist/js/wurscht3000.js",
   "version": "0.1.0",
   "homepage": "https://github.com/schmijos/wurscht3000",
   "authors": [
