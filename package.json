@@ -6,11 +6,9 @@
   "directories": {
     "doc": "docs"
   },
-  "dependencies": {
-    "gulp": "^3.9.0"
-  },
   "devDependencies": {
-    "gulp": "^3.9.0"
+    "gulp": "^3.9.0",
+    "gulp-jasmine": "^2.0.1"
   },
   "scripts": {
     "test": "gulp test"

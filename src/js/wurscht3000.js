@@ -7,7 +7,7 @@ function generateBasePalette() {
         [ 17, 13, 31],
         [240,240,240],
     ];*/
-    
+
     /*return [
         [  8,250,  8],
         [250,  8,250],
@@ -46,25 +46,25 @@ function calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, pixelOffset, baseP
     prevR = prevEncodedFrame[pixelOffset];
     prevG = prevEncodedFrame[pixelOffset+1];
     prevB = prevEncodedFrame[pixelOffset+2];
-    
-    nextR = nextSourceFrame[pixelOffset]; 
-    nextG = nextSourceFrame[pixelOffset+1]; 
-    nextB = nextSourceFrame[pixelOffset+2]; 
+
+    nextR = nextSourceFrame[pixelOffset];
+    nextG = nextSourceFrame[pixelOffset+1];
+    nextB = nextSourceFrame[pixelOffset+2];
 
     // now choose the best base color vector
     for (var i = 0; i < basePalette.length; i++) {
         // calculate distance between diff and base palette
         var dist = Math.pow(
-            Math.pow( (prevR + basePalette[i][0]) % 256 - nextR, 2) + 
+            Math.pow( (prevR + basePalette[i][0]) % 256 - nextR, 2) +
             Math.pow( (prevG + basePalette[i][1]) % 256 - nextG, 2) +
             Math.pow( (prevB + basePalette[i][2]) % 256 - nextB, 2)
-        , 0.5); // Euclidian Distance       
+        , 0.5); // Euclidian Distance
 
         // keep the smallest distance
         if (dist < minDistance) {
             minDistance = dist;
             minIndex = i;
-        }        
+        }
     }
 
     return minIndex;
@@ -98,9 +98,9 @@ function renderFrame(ctx, diff, width, height, basePalette) {
     // Image sample
     function onVideoPlay(ev) {
         alert("Begin dec/enc now.");
-        
+
         var $this = this;
-        
+
         var imgWidth = ev.target.videoWidth;
         var imgHeight = ev.target.videoHeight;
 
@@ -144,11 +144,13 @@ function renderFrame(ctx, diff, width, height, basePalette) {
         }, 40);
     }
 
-    // init 
+    // init
     var video = document.getElementById('sourceVideo');
     video.addEventListener('play', onVideoPlay, false);
 
 })()
+
+/*
 
 // Put event listeners into place
 window.addEventListener("DOMContentLoaded", function() {
@@ -156,7 +158,7 @@ window.addEventListener("DOMContentLoaded", function() {
     var video = document.getElementById("sourceVideo"),
         videoObj = { "video": true },
         errBack = function(error) {
-            console.log("Video capture error: ", error.code); 
+            console.log("Video capture error: ", error.code);
         };
 
     // Put video listeners into place
@@ -178,3 +180,5 @@ window.addEventListener("DOMContentLoaded", function() {
         }, errBack);
     }
 }, false);
+
+*/
