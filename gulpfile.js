@@ -24,8 +24,9 @@ gulp.task('ts', function () {
 
 // Test JS
 gulp.task('test', ['ts_test'], function () {
-	return gulp.src('built/local/test.js')
-					     .pipe(jasmine());
+	return gulp.src('built/local/test.js').pipe(jasmine({
+		includeStackTrace: true
+	}));
 });
 
 gulp.task('default', ['test']);
