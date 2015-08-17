@@ -63,7 +63,7 @@ function calcBestDiffIndex(prevEncodedFrame: number[], nextSourceFrame: number[]
         // keep the smallest distance
         if (dist < minDistance) {
             minDistance = dist;
-            minIndex = i;
+            resultingMinIndex = i;
         }
     }
 
@@ -71,7 +71,7 @@ function calcBestDiffIndex(prevEncodedFrame: number[], nextSourceFrame: number[]
 }
 
 // Calculate the jump diff to reach the next frame
-function calcNewDiffFrame(resDiffFrame: number[], prevEncodedFrame: number[], nextSourceFrame: number[][], basePalette: number[][]): void {
+function calcNewDiffFrame(resDiffFrame: number[], prevEncodedFrame: number[], nextSourceFrame: number[], basePalette: number[][]): void {
     for (var i = 0; i < resDiffFrame.length; i++) {
         resDiffFrame[i] = calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, 4*i, basePalette);
     }
@@ -79,10 +79,10 @@ function calcNewDiffFrame(resDiffFrame: number[], prevEncodedFrame: number[], ne
 
 // Render pixel by pixel on a canvas context
 function renderFrame(ctx: CanvasRenderingContext2D, diff: number[], width: number, height: number, basePalette: number[][]): void {
-    var imageData: any = ctx.getImageData(0, 0, width, height);
-    var diffPos = 0;
+    var imageData: ImageData = ctx.getImageData(0, 0, width, height);
+    var diffPos: number = 0;
     for (var i = 0; i < imageData.data.length; diffPos++) {
-        var diffColor = basePalette[diff[diffPos]];
+        var diffColor: number[] = basePalette[diff[diffPos]];
         imageData.data[i] = (imageData.data[i++] + diffColor[0]) % 256; // Red
         imageData.data[i] = (imageData.data[i++] + diffColor[1]) % 256; // Green
         imageData.data[i] = (imageData.data[i++] + diffColor[2]) % 256; // Blue
