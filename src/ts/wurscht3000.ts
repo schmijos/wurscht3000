@@ -78,7 +78,7 @@ function calcNewDiffFrame(resDiffFrame: number[], prevEncodedFrame: number[], ne
 }
 
 // Render pixel by pixel on a canvas context
-function renderFrame(ctx: CanvasRenderingContext2D, diff, width, height, basePalette): void {
+function renderFrame(ctx: CanvasRenderingContext2D, diff: number[], width: number, height: number, basePalette: number[][]): void {
     var imageData: any = ctx.getImageData(0, 0, width, height);
     var diffPos = 0;
     for (var i = 0; i < imageData.data.length; diffPos++) {
