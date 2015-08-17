@@ -11,8 +11,7 @@ describe("#generateBasePalette", function () {
 
 describe("#calcNewDiffFrame", function () {
   it("calls the calc function for each pixel", function () {
-
-    var calcBestDiffIndex = jasmine.createSpy();
+    spyOn(Wurscht3000, 'calcBestDiffIndex').and.returnValue(1);
 
     var diffFrame: number[] = [
       0,0,0,0,
@@ -23,8 +22,7 @@ describe("#calcNewDiffFrame", function () {
     var nextSourceFrame: [];
     var basePalette = [];
 
-    //calcNewDiffFrame(diffFrame, prevEncodedFrame, nextSourceFrame, basePalette);
-
-    //expect(calcBestDiffIndex.callCount).toBe(diffFrame.length);
+    Wurscht3000.calcNewDiffFrame(diffFrame, prevEncodedFrame, nextSourceFrame, basePalette);
+    expect(Wurscht3000.calcBestDiffIndex.calls.count()).toBe(diffFrame.length);
   });
 });

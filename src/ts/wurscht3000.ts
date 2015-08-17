@@ -74,7 +74,7 @@ module Wurscht3000 {
   // Calculate the jump diff to reach the next frame
   export function calcNewDiffFrame(resDiffFrame: number[], prevEncodedFrame: number[], nextSourceFrame: number[], basePalette: number[][]): void {
       for (var i = 0; i < resDiffFrame.length; i++) {
-          resDiffFrame[i] = calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, 4*i, basePalette);
+          resDiffFrame[i] = Wurscht3000.calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, 4*i, basePalette);
       }
   }
 
