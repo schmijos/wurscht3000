@@ -39,22 +39,22 @@ function generateBasePalette(): number[][] {
 
 // Calculate the nearest distance from the previously shown pixel to the next one
 function calcBestDiffIndex(prevEncodedFrame: number[], nextSourceFrame: number[], pixelOffset: number, basePalette: number[][]): number {
-    var prevR, prevG, prevB, nextR, nextG, nextB, minIndex;
-    var minDistance = 9999;
+    var resultingMinIndex: number;
+    var minDistance: number = 9999;
 
     // calculate distance between previously encoded frame and the next one to be encoded
-    prevR = prevEncodedFrame[pixelOffset];
-    prevG = prevEncodedFrame[pixelOffset+1];
-    prevB = prevEncodedFrame[pixelOffset+2];
+    var prevR: number = prevEncodedFrame[pixelOffset];
+    var prevG: number = prevEncodedFrame[pixelOffset+1];
+    var prevB: number = prevEncodedFrame[pixelOffset+2];
 
-    nextR = nextSourceFrame[pixelOffset];
-    nextG = nextSourceFrame[pixelOffset+1];
-    nextB = nextSourceFrame[pixelOffset+2];
+    var nextR: number = nextSourceFrame[pixelOffset];
+    var nextG: number = nextSourceFrame[pixelOffset+1];
+    var nextB: number = nextSourceFrame[pixelOffset+2];
 
     // now choose the best base color vector
     for (var i = 0; i < basePalette.length; i++) {
         // calculate distance between diff and base palette
-        var dist = Math.pow(
+        var dist: number = Math.pow(
             Math.pow( (prevR + basePalette[i][0]) % 256 - nextR, 2) +
             Math.pow( (prevG + basePalette[i][1]) % 256 - nextG, 2) +
             Math.pow( (prevB + basePalette[i][2]) % 256 - nextB, 2)
@@ -67,7 +67,7 @@ function calcBestDiffIndex(prevEncodedFrame: number[], nextSourceFrame: number[]
         }
     }
 
-    return minIndex;
+    return resultingMinIndex;
 }
 
 // Calculate the jump diff to reach the next frame
