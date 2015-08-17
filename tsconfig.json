@@ -12,11 +12,11 @@
     },
     "filesGlob": [
         "./**/*.ts",
+        "!./**/*_spec.ts",
         "!./node_modules/**/*.ts"
     ],
     "files": [
-        "./src/js/wurscht3000.ts",
-        "./src/js/wurscht3000_spec.ts",
+        "./src/ts/wurscht3000.ts",
         "./typings/jasmine/jasmine.d.ts",
         "./typings/tsd.d.ts"
     ],
