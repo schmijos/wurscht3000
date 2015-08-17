@@ -1,5 +1,5 @@
 // Generates a base palette for cyclic additive HAM7
-function generateBasePalette() {
+function generateBasePalette(): number[][] {
     /*// empirical best for 2bits per pixel
     return [
         [ 31, 17, 13],
@@ -38,7 +38,7 @@ function generateBasePalette() {
 }
 
 // Calculate the nearest distance from the previously shown pixel to the next one
-function calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, pixelOffset, basePalette) {
+function calcBestDiffIndex(prevEncodedFrame: number[], nextSourceFrame: number[], pixelOffset: number, basePalette: number[][]): number {
     var prevR, prevG, prevB, nextR, nextG, nextB, minIndex;
     var minDistance = 9999;
 
@@ -71,14 +71,14 @@ function calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, pixelOffset, baseP
 }
 
 // Calculate the jump diff to reach the next frame
-function calcNewDiffFrame(resDiffFrame, prevEncodedFrame, nextSourceFrame, basePalette) {
+function calcNewDiffFrame(resDiffFrame: number[], prevEncodedFrame: number[], nextSourceFrame: number[][], basePalette: number[][]): void {
     for (var i = 0; i < resDiffFrame.length; i++) {
         resDiffFrame[i] = calcBestDiffIndex(prevEncodedFrame, nextSourceFrame, 4*i, basePalette);
     }
 }
 
 // Render pixel by pixel on a canvas context
-function renderFrame(ctx, diff, width, height, basePalette) {
+function renderFrame(ctx: CanvasRenderingContext2D, diff, width, height, basePalette): void {
     var imageData: any = ctx.getImageData(0, 0, width, height);
     var diffPos = 0;
     for (var i = 0; i < imageData.data.length; diffPos++) {
