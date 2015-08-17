@@ -3,7 +3,7 @@
 
 describe("#generateBasePalette", function () {
   it("returns a 2D array", function () {
-    var basePalette = generateBasePalette();
+    var basePalette = Wurscht3000.generateBasePalette();
     expect(basePalette).toEqual(jasmine.any(Array));
     expect(basePalette[0]).toEqual(jasmine.any(Array));
   });
@@ -11,6 +11,7 @@ describe("#generateBasePalette", function () {
 
 describe("#calcNewDiffFrame", function () {
   it("calls the calc function for each pixel", function () {
+
     var calcBestDiffIndex = jasmine.createSpy();
 
     var diffFrame: number[] = [
