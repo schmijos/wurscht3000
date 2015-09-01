@@ -1,4 +1,6 @@
-.DS_Store
 node_modules/
 bower_componentes/
 built/
+
+.DS_Store
+.idea/

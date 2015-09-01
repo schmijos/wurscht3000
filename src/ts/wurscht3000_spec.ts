@@ -18,8 +18,8 @@ describe("#calcNewDiffFrame", function () {
       0,0,0,0,
       0,0,0,0,
       0,0,0,0]; // 4x4 picture
-    var prevEncodedFrame: [];
-    var nextSourceFrame: [];
+    var prevEncodedFrame = [];
+    var nextSourceFrame = [];
     var basePalette = [];
 
     Wurscht3000.calcNewDiffFrame(diffFrame, prevEncodedFrame, nextSourceFrame, basePalette);
