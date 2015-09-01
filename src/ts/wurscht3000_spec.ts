@@ -23,6 +23,7 @@ describe("#calcNewDiffFrame", function () {
     var basePalette: number[][] = [];
 
     Wurscht3000.calcNewDiffFrame(diffFrame, prevEncodedFrame, nextSourceFrame, basePalette);
-    expect(Wurscht3000.calcBestDiffIndex.calls.count()).toBe(diffFrame.length);
+    var diffFunction: jasmine.Spy = <jasmine.Spy> Wurscht3000.calcBestDiffIndex;
+    expect(diffFunction.calls.count()).toBe(diffFrame.length);
   });
 });
