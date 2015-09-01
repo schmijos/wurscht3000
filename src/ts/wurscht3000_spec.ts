@@ -18,9 +18,9 @@ describe("#calcNewDiffFrame", function () {
       0,0,0,0,
       0,0,0,0,
       0,0,0,0]; // 4x4 picture
-    var prevEncodedFrame = [];
-    var nextSourceFrame = [];
-    var basePalette = [];
+    var prevEncodedFrame: number[] = [];
+    var nextSourceFrame: number[] = [];
+    var basePalette: number[][] = [];
 
     Wurscht3000.calcNewDiffFrame(diffFrame, prevEncodedFrame, nextSourceFrame, basePalette);
     expect(Wurscht3000.calcBestDiffIndex.calls.count()).toBe(diffFrame.length);
